@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.displaycontroller.AppOverviewController">
+   <children>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="2.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Add new publisher" />
+                  <MenuItem mnemonicParsing="false" text="Add new series" />
+                  <MenuItem mnemonicParsing="false" text="Add new issue" />
+              <MenuItem mnemonicParsing="false" text="Edit" />
+                  <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <BorderPane layoutY="27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+         <bottom>
+            <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <buttons>
+                  <Button fx:id="markReadButton" mnemonicParsing="false" onAction="#handleMarkReadButtonPushed" text="Mark Read" />
+                <Button fx:id="editButton" mnemonicParsing="false" text="Edit" />
+                  <Button fx:id="deleteButton" layoutX="535.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleDeleteButtonPushed" text="Delete" />
+                  <Button fx:id="deleteAllButton" mnemonicParsing="false" onAction="#handleDeleteAllButtonPushed" text="Delete All" />
+              </buttons>
+               <BorderPane.margin>
+                  <Insets right="10.0" />
+               </BorderPane.margin>
+            </ButtonBar>
+         </bottom>
+         <center>
+            <TableView fx:id="issueTable" editable="true" prefWidth="1000" BorderPane.alignment="CENTER">
+               <columns>
+                  <TableColumn fx:id="publisherColumn" prefWidth="75.0" text="Publisher" />
+                  <TableColumn fx:id="seriesColumn" prefWidth="75.0" text="Series" />
+                  <TableColumn fx:id="issueColumn" prefWidth="75.0" text="Issue" />
+                  <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Date Released" />
+                  <TableColumn fx:id="priorityColumn" prefWidth="75.0" text="Priority" />
+                  <TableColumn fx:id="readColumn" prefWidth="75.0" text="Read" />
+               </columns>
+            </TableView>
+         </center>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+         <top>
+            <GridPane vgap="10.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints fillWidth="false" hgrow="NEVER" minWidth="10.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ButtonBar>
+                     <buttons>
+                        <DatePicker fx:id="datePicker" onAction="#handleDateSelected" />
+                        <Button fx:id="updateButton" mnemonicParsing="false" onAction="#handleUpdateButtonPushed" text="Update">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Button>
+                        <Label fx:id="updateLabel" minWidth="-Infinity" prefWidth="500.0" text="Label" visible="false" />
+                        <HBox />
+                     </buttons>
+                  </ButtonBar>
+                  <ButtonBar prefWidth="1000.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+                    <buttons>
+                        <TextField fx:id="searchBox" onAction="#handleSearchPushed" promptText="Search..." />
+                        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchPushed" text="Find!" />
+                        <CheckBox fx:id="exactMatchCheckbox" contentDisplay="CENTER" maxWidth="90.0" minWidth="-Infinity" mnemonicParsing="false" prefWidth="90.0" text="Exact Match" underline="true" />
+                        <Label fx:id="searchLabel" prefWidth="200.0" text="Label" visible="false">
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                        </Label>
+                        <HBox fillHeight="false" prefWidth="215.0" />
+                    </buttons>
+                  </ButtonBar>
+                  <ButtonBar prefWidth="1000.0" GridPane.rowIndex="2">
+                    <buttons>
+                        <Button fx:id="newPubButton" mnemonicParsing="false" onAction="#handleAddNewPublisherButtonPushed" text="Add new publisher" />
+                        <Button fx:id="newSeriesButton" mnemonicParsing="false" text="Add new series" />
+                        <Button fx:id="newIssueButton" contentDisplay="CENTER" mnemonicParsing="false" text="Add new issue">
+                           <tooltip>
+                              <Tooltip text="Manually add a new issue." />
+                           </tooltip></Button>
+                        <Button fx:id="delPubButton" mnemonicParsing="false" onAction="#handleDelPublisherButtonPushed" text="Delete publisher" />
+                        <Button fx:id="delSeriesButton" mnemonicParsing="false" onAction="#handleDelSeriesButtonPushed" text="Delete series" />
+                        <Button fx:id="delIssueButton" mnemonicParsing="false" onAction="#handleDelIssueButtonPushed" text="Delete issue" />
+                        <HBox prefWidth="240.0" />
+                    </buttons>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </ButtonBar>
+               </children>
+               <BorderPane.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </BorderPane.margin>
+            </GridPane>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>

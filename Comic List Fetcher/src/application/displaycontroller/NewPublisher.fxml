@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="150.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.displaycontroller.NewPublisherController">
+   <children>
+      <HBox layoutY="50.0" prefHeight="25.0" prefWidth="295.0" spacing="10.0" AnchorPane.leftAnchor="0.0">
+         <children>
+            <Label prefHeight="50.0" prefWidth="125.0" text="Enter Publisher Name:" />
+            <TextField fx:id="inputField" prefHeight="25.0" prefWidth="150.0" />
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </HBox>
+      <ButtonBar layoutY="260.0" prefHeight="40.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <buttons>
+          <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddButtonPushed" text="Add" />
+            <Button fx:id="viewPublishersButton" mnemonicParsing="false" onAction="#handleViewPublishersButtonPushed" text="View Publishers" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancelButtonPushed" text="Cancel" />
+        </buttons>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </ButtonBar>
+   </children>
+</AnchorPane>
