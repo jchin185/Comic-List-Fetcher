@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 import application.DatabaseManager;
+import application.FileManager;
 import application.MainApp;
 import application.WebPageParser;
 import application.entity.Issue;
 import application.entity.Issue.ReadStatus;
 import application.entity.Series.PriorityStatus;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -25,19 +27,34 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+/**
+ * This class controls the main flow of logic for the GUI elements.
+ * 
+ * @author Jesse
+ *
+ */
 public class AppOverviewController {
 	private MainApp app;
 	private DatabaseManager dbManager;
+	private FileManager fm;
 
 	private String lastSearchTerm;
 	private boolean lastIsExactMatch;
 
 	private ObservableList<Issue> issueList;
+
+	@FXML
+	private MenuItem importItem;
+	@FXML
+	private MenuItem exportItem;
+	@FXML
+	private MenuItem closeItem;
 
 	@FXML
 	private DatePicker datePicker;
@@ -137,6 +154,26 @@ public class AppOverviewController {
 	}
 
 	@FXML
+	private void handleImportSelected() {
+		System.err.println("Import item.");
+		boolean b = fm.importFile();
+		System.out.println(b);
+	}
+
+	@FXML
+	private void handleExportSelected() {
+		System.err.println("Export item.");
+	}
+
+	@FXML
+	private void handleCloseSelected() {
+		System.err.println("Exit item.");
+		exit();
+		Platform.exit();
+		System.exit(0);
+	}
+
+	@FXML
 	private void handleDateSelected() {
 		System.out.println("Date selected.");
 		LocalDate date = datePicker.getValue();
@@ -157,9 +194,11 @@ public class AppOverviewController {
 				updateLabel
 						.setText("Could not connect or invalid date selected.");
 			} else {
-				String prevSeries = "";
-				double prevIssue = 0;
 				for (String s : list) {
+					// 2nd printing of old issues
+					if (s.contains("2nd Printing")) {
+						continue;
+					}
 					String publisher = s.split(",")[1];
 					if (dbManager.findPubByName(publisher) != null) {
 						String issue = s.split(",")[2];
@@ -178,17 +217,15 @@ public class AppOverviewController {
 											poundIndex + 1, parenIndex).trim());
 								}
 							} catch (NumberFormatException e) {
-								System.err.println("double parsing error");
+								System.err.println("Error adding " + s);
+								// add option to add manually
 							}
-							if ((prevSeries.equals(series) && prevIssue != num)
-									|| (!prevSeries.equals(series)) && dbManager
-											.findSeriesByName(series) != null) {
+							if (dbManager.findIssueBySeriesAndNum(series,
+									num) == null) {
 								System.err.println("TO BE ADDED " + publisher
 										+ " " + series + " " + num);
 								dbManager.addNewIssue(series, num,
 										datePicker.getValue());
-								prevSeries = series;
-								prevIssue = num;
 							}
 						}
 					}
@@ -266,7 +303,7 @@ public class AppOverviewController {
 		System.err.println("Mark read button pushed");
 		List<Issue> selectedList = issueTable.getSelectionModel()
 				.getSelectedItems();
-		dbManager.changeIssueListStatus(selectedList);
+		dbManager.changeIssueListStatus(selectedList, ReadStatus.READ);
 		issueList.clear();
 		List<Issue> searchResults = dbManager.findIssuesWith(lastSearchTerm,
 				lastIsExactMatch);
@@ -327,5 +364,9 @@ public class AppOverviewController {
 				.bind(issueTable.widthProperty().multiply(0.10));
 		readColumn.prefWidthProperty()
 				.bind(issueTable.widthProperty().multiply(0.10));
+	}
+
+	public void createFileChooser() {
+		fm = new FileManager(app.getPrimaryStage());
 	}
 }

@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 
 /**
  * Entity implementation class for Entity: Series
+ * 
+ * This class represents a comic book series.
  *
  */
 @Entity

@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 
 /**
  * Entity implementation class for Entity: Issue
+ * 
+ * This class represents a comic book issue.
  *
  */
 @Entity

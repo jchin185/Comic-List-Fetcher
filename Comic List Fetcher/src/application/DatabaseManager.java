@@ -16,6 +16,14 @@ import application.entity.Publisher;
 import application.entity.Series;
 import application.entity.Series.PriorityStatus;
 
+/**
+ * This class has various methods to interact with the database(e.g. addition,
+ * deletion, query). In order to get an instance of this, use the static method
+ * getSingleton().
+ * 
+ * @author Jesse
+ *
+ */
 public class DatabaseManager {
 	// entity manager factory object
 	private EntityManagerFactory emf;
@@ -82,7 +90,7 @@ public class DatabaseManager {
 	 *            the issue number
 	 * @return the issue if found, otherwise null
 	 */
-	public Issue findIssueBySeriesAndNum(String seriesName, int issueNum) {
+	public Issue findIssueBySeriesAndNum(String seriesName, double issueNum) {
 		Issue i = null;
 		Series s = this.findSeriesByName(seriesName);
 		if (s != null) {
@@ -130,6 +138,15 @@ public class DatabaseManager {
 		TypedQuery<Issue> query = em.createQuery(qlString, Issue.class);
 		return query.getResultList();
 	}
+	/**
+	 * Gets a list of issues with specified name.
+	 * 
+	 * @param searchCriteria
+	 *            the string to look for
+	 * @param exactMatch
+	 *            if the search should look for exact matches only
+	 * @return
+	 */
 
 	public List<Issue> findIssuesWith(String searchCriteria,
 			boolean exactMatch) {
@@ -252,6 +269,15 @@ public class DatabaseManager {
 		return created;
 	}
 
+	/**
+	 * Changes the priority status of a series.
+	 * 
+	 * @param seriesName
+	 *            the name of the series to change the priority of
+	 * @param newStatus
+	 *            the new status to change the priority to
+	 * @return if the status was successfully changed
+	 */
 	public boolean changeSeriesPriority(String seriesName,
 			PriorityStatus newStatus) {
 		Series s = this.findSeriesByName(seriesName);
@@ -269,6 +295,17 @@ public class DatabaseManager {
 		return changed;
 	}
 
+	/**
+	 * Changes the read status of an issue.
+	 * 
+	 * @param seriesName
+	 *            the name of the series of the issue
+	 * @param issueNum
+	 *            the issue number
+	 * @param newStatus
+	 *            the new read status to change to
+	 * @return if the read status was successfully changed
+	 */
 	public boolean changeIssueStatus(String seriesName, int issueNum,
 			ReadStatus newStatus) {
 		Series s = this.findSeriesByName(seriesName);
@@ -287,12 +324,22 @@ public class DatabaseManager {
 		return changed;
 	}
 
-	public boolean changeIssueListStatus(List<Issue> issueList) {
+	/**
+	 * Changes the read status of a list of issues.
+	 * 
+	 * @param issueList
+	 *            the issue list to status
+	 * @param newStatus
+	 *            the new read status to change to
+	 * @return if the read status of every issue was successfully changed
+	 */
+	public boolean changeIssueListStatus(List<Issue> issueList,
+			ReadStatus newStatus) {
 		boolean changed = false;
 
 		this.startTransaction();
 		for (Issue i : issueList) {
-			i.setReadStatus(ReadStatus.READ);
+			i.setReadStatus(newStatus);
 		}
 		try {
 			this.commitTransaction();
@@ -303,6 +350,16 @@ public class DatabaseManager {
 		return changed;
 	}
 
+	/**
+	 * Deletes a publisher from the database.
+	 * 
+	 * This will delete all series and issues associated with this publisher.
+	 * 
+	 * @param publisherName
+	 *            the name of the publisher
+	 * @return if the publisher and associated series/issues were successfully
+	 *         deleted
+	 */
 	public boolean deletePublisher(String publisherName) {
 		boolean deleted = false;
 		this.startTransaction();
@@ -319,6 +376,13 @@ public class DatabaseManager {
 		return deleted;
 	}
 
+	/**
+	 * Deletes a list of issues.
+	 * 
+	 * @param issueList
+	 *            the list of issues
+	 * @return if the issue list was successfully deleted
+	 */
 	public boolean deleteIssueList(List<Issue> issueList) {
 		boolean allDeleted = false;
 		this.startTransaction();
@@ -360,7 +424,7 @@ public class DatabaseManager {
 	/**
 	 * Commit transaction
 	 */
-	private void commitTransaction() {
+	private void commitTransaction() throws RollbackException {
 		if (em.getTransaction().isActive()) {
 			// Commit the transaction
 			em.getTransaction().commit();

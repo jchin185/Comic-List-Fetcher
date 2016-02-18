@@ -15,6 +15,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+/**
+ * This class controls the main flow of logic and manages the stages/scenes.
+ * 
+ * @author Jesse
+ *
+ */
 public class MainApp extends Application {
 
 	AppOverviewController controller;
@@ -50,6 +56,7 @@ public class MainApp extends Application {
 			controller = loader.getController();
 			controller.setMainApp(this);
 			controller.setColumnBindings();
+			controller.createFileChooser();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -97,6 +104,10 @@ public class MainApp extends Application {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public Stage getPrimaryStage() {
+		return this.primaryStage;
 	}
 
 }

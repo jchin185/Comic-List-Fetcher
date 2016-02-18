@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 
 /**
  * Entity implementation class for Entity: Publisher
+ * 
+ * This class represents a comic book publishing company.
  *
  */
 @Entity
