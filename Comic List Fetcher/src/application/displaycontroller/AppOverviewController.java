@@ -168,9 +168,16 @@ public class AppOverviewController {
 	@FXML
 	private void handleCloseSelected() {
 		System.err.println("Exit item.");
-		exit();
-		Platform.exit();
-		System.exit(0);
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setHeaderText("Quit?");
+		alert.setTitle("Quit?");
+		alert.setContentText("Are you sure you want to quit?");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			exit();
+			Platform.exit();
+			System.exit(0);
+		}
 	}
 
 	@FXML
