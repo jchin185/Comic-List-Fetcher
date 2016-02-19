@@ -163,6 +163,7 @@ public class AppOverviewController {
 	@FXML
 	private void handleExportSelected() {
 		System.err.println("Export item.");
+		boolean b = fm.exportFile();
 	}
 
 	@FXML

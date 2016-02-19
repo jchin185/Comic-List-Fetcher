@@ -3,8 +3,12 @@ package application;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
+import application.entity.Publisher;
+import application.entity.Series;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -51,7 +55,26 @@ public class FileManager {
 		return success;
 	}
 
-	public void exportFile() {
-
+	public boolean exportFile() {
+		List<Publisher> pubList = dbManager.getPublisherList();
+		File f = fc.showSaveDialog(stage);
+		if (f != null) {
+			try {
+				FileWriter fw = new FileWriter(f);
+				for (Publisher p : pubList) {
+					fw.write("Publisher:" + p.getName() + "\n");
+					System.out.print("Publisher:" + p.getName() + "\n");
+					for (Series s : p.getSeriesList()) {
+						fw.write(s.getName() + "\n");
+						System.out.print(s.getName() + "\n");
+					}
+				}
+				fw.close();
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 }
