@@ -2,9 +2,9 @@ package application;
 
 import java.io.IOException;
 
-import application.displaycontroller.AppOverviewController;
-import application.displaycontroller.DeletePublisherController;
-import application.displaycontroller.NewPublisherController;
+import application.controller.AppOverviewController;
+import application.controller.DeletePublisherController;
+import application.controller.NewPublisherController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -48,15 +48,14 @@ public class MainApp extends Application {
 	private void setUpMainScene() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("displaycontroller/AppOverview.fxml"));
+			loader.setLocation(
+					MainApp.class.getResource("display/AppOverview.fxml"));
 			Scene scene = new Scene((AnchorPane) loader.load());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			controller = loader.getController();
 			controller.setMainApp(this);
 			controller.setColumnBindings();
-			controller.createFileChooser();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -65,8 +64,8 @@ public class MainApp extends Application {
 	public boolean showNewPublisherWindow() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("displaycontroller/NewPublisher.fxml"));
+			loader.setLocation(
+					MainApp.class.getResource("display/NewPublisher.fxml"));
 			AnchorPane pane = (AnchorPane) loader.load();
 			Stage newPublisherStage = new Stage();
 			newPublisherStage.setTitle("Add a new publisher.");
@@ -87,8 +86,8 @@ public class MainApp extends Application {
 	public boolean showDeletePublisherWindow() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("displaycontroller/DeletePublisher.fxml"));
+			loader.setLocation(
+					MainApp.class.getResource("display/DeletePublisher.fxml"));
 			AnchorPane pane = (AnchorPane) loader.load();
 			Stage newPublisherStage = new Stage();
 			newPublisherStage.setTitle("Delete an existing publisher.");

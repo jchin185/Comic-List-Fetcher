@@ -1,4 +1,4 @@
-package application.displaycontroller;
+package application.controller;
 
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
@@ -42,7 +42,6 @@ import javafx.scene.control.TextField;
 public class AppOverviewController {
 	private MainApp app;
 	private DatabaseManager dbManager;
-	private FileManager fm;
 
 	private String lastSearchTerm;
 	private boolean lastIsExactMatch;
@@ -156,14 +155,16 @@ public class AppOverviewController {
 	@FXML
 	private void handleImportSelected() {
 		System.err.println("Import item.");
-		boolean b = fm.importFile();
+
+		boolean b = FileManager.importFile(app.getPrimaryStage(), dbManager);
 		System.out.println(b);
 	}
 
 	@FXML
 	private void handleExportSelected() {
 		System.err.println("Export item.");
-		boolean b = fm.exportFile();
+		boolean b = FileManager.exportFile(app.getPrimaryStage(), dbManager);
+		System.out.println(b);
 	}
 
 	@FXML
@@ -194,7 +195,7 @@ public class AppOverviewController {
 
 	@FXML
 	private void handleUpdateButtonPushed() {
-		System.out.println("Update button pushed.");
+		System.out.println("Update Button pushed.");
 		if (datePicker.getValue() != null) {
 			System.out.println(datePicker.getValue().toString());
 			List<String> list = WebPageParser.parsePage(datePicker.getValue());
@@ -338,6 +339,7 @@ public class AppOverviewController {
 				"You are about to delete all currently shown issues");
 		alert.setContentText(
 				"Are you sure you want to delete all currently shown issues?");
+
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {
 			if (dbManager.deleteIssueList(issueList)) {
@@ -348,6 +350,7 @@ public class AppOverviewController {
 		} else {
 			return;
 		}
+
 		issueTable.setItems(issueList);
 	}
 
@@ -374,7 +377,7 @@ public class AppOverviewController {
 				.bind(issueTable.widthProperty().multiply(0.10));
 	}
 
-	public void createFileChooser() {
-		fm = new FileManager(app.getPrimaryStage());
+	private void updateDatabase() {
+
 	}
 }

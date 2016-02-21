@@ -1,4 +1,4 @@
-package application.displaycontroller;
+package application.controller;
 
 import java.util.List;
 

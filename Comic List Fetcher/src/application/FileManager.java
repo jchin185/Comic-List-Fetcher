@@ -19,17 +19,12 @@ import javafx.stage.Stage;
  *
  */
 public class FileManager {
-	FileChooser fc;
-	Stage stage;
-	DatabaseManager dbManager;
+	public FileManager() {
 
-	public FileManager(Stage stage) {
-		fc = new FileChooser();
-		this.stage = stage;
-		dbManager = DatabaseManager.getSingleton();
 	}
 
-	public boolean importFile() {
+	public static boolean importFile(Stage stage, DatabaseManager dbManager) {
+		FileChooser fc = new FileChooser();
 		fc.setTitle("Import a file.");
 		File f = fc.showOpenDialog(stage);
 		boolean success = false;
@@ -55,8 +50,9 @@ public class FileManager {
 		return success;
 	}
 
-	public boolean exportFile() {
+	public static boolean exportFile(Stage stage, DatabaseManager dbManager) {
 		List<Publisher> pubList = dbManager.getPublisherList();
+		FileChooser fc = new FileChooser();
 		File f = fc.showSaveDialog(stage);
 		if (f != null) {
 			try {
