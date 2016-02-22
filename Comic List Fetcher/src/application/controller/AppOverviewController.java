@@ -376,8 +376,4 @@ public class AppOverviewController {
 		readColumn.prefWidthProperty()
 				.bind(issueTable.widthProperty().multiply(0.10));
 	}
-
-	private void updateDatabase() {
-
-	}
 }
