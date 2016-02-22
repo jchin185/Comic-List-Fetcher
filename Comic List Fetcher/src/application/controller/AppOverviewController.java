@@ -19,7 +19,9 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -196,60 +198,7 @@ public class AppOverviewController {
 	@FXML
 	private void handleUpdateButtonPushed() {
 		System.out.println("Update Button pushed.");
-		if (datePicker.getValue() != null) {
-			System.out.println(datePicker.getValue().toString());
-			List<String> list = WebPageParser.parsePage(datePicker.getValue());
-			if (list == null) {
-				updateLabel
-						.setText("Could not connect or invalid date selected.");
-			} else {
-				for (String s : list) {
-					// 2nd printing of old issues
-					if (s.contains("2nd Printing")) {
-						continue;
-					}
-					String publisher = s.split(",")[1];
-					if (dbManager.findPubByName(publisher) != null) {
-						String issue = s.split(",")[2];
-						int poundIndex = issue.indexOf("#");
-						if (poundIndex != -1) {
-							int parenIndex = issue.indexOf("(");
-							String series = issue.substring(0, poundIndex)
-									.trim();
-							double num = 1;
-							try {
-								if (parenIndex == -1) {
-									num = Double.parseDouble(
-											issue.substring(poundIndex + 1));
-								} else {
-									num = Double.parseDouble(issue.substring(
-											poundIndex + 1, parenIndex).trim());
-								}
-							} catch (NumberFormatException e) {
-								System.err.println("Error adding " + s);
-								// add option to add manually
-							}
-							if (dbManager.findIssueBySeriesAndNum(series,
-									num) == null) {
-								System.err.println("TO BE ADDED " + publisher
-										+ " " + series + " " + num);
-								dbManager.addNewIssue(series, num,
-										datePicker.getValue());
-							}
-						}
-					}
-				}
-				System.out.println("DONE");
-				updateLabel.setText("Update success!");
-				issueList = FXCollections
-						.observableArrayList(dbManager.getIssueList());
-				issueTable.setItems(issueList);
-			}
-		} else {
-			System.err.println("no date selected.");
-			updateLabel.setText("No date selected.");
-		}
-		updateLabel.setVisible(true);
+		new Thread(showCursor("update")).start();
 	}
 
 	@FXML
@@ -375,5 +324,86 @@ public class AppOverviewController {
 				.bind(issueTable.widthProperty().multiply(0.10));
 		readColumn.prefWidthProperty()
 				.bind(issueTable.widthProperty().multiply(0.10));
+	}
+
+	private String updateTable() {
+		String labelText = "";
+		if (datePicker.getValue() != null) {
+			System.out.println(datePicker.getValue().toString());
+			List<String> list = WebPageParser.parsePage(datePicker.getValue());
+			if (list == null) {
+				labelText = "Could not connect or invalid date selected.";
+			} else {
+				for (String s : list) {
+					// 2nd printing of old issues
+					if (s.contains("2nd Printing")) {
+						continue;
+					}
+					String publisher = s.split(",")[1];
+					if (dbManager.findPubByName(publisher) != null) {
+						String issue = s.split(",")[2];
+						int poundIndex = issue.indexOf("#");
+						if (poundIndex != -1) {
+							int parenIndex = issue.indexOf("(");
+							String series = issue.substring(0, poundIndex)
+									.trim();
+							double num = 1;
+							try {
+								if (parenIndex == -1) {
+									num = Double.parseDouble(
+											issue.substring(poundIndex + 1));
+								} else {
+									num = Double.parseDouble(issue.substring(
+											poundIndex + 1, parenIndex).trim());
+								}
+							} catch (NumberFormatException e) {
+								System.err.println("Error adding " + s);
+								// add option to add manually
+							}
+							if (dbManager.findIssueBySeriesAndNum(series,
+									num) == null) {
+								System.err.println("TO BE ADDED " + publisher
+										+ " " + series + " " + num);
+								dbManager.addNewIssue(series, num,
+										datePicker.getValue());
+							}
+						}
+					}
+				}
+				System.out.println("DONE");
+				labelText = "Update success!";
+				issueList = FXCollections
+						.observableArrayList(dbManager.getIssueList());
+				issueTable.setItems(issueList);
+			}
+		} else {
+			System.err.println("no date selected.");
+			labelText = "No date selected.";
+		}
+		return labelText;
+	}
+
+	private Task<Void> showCursor(String cmd) {
+		Task<Void> task = new Task<Void>() {
+			@Override
+			public Void call() {
+				app.getPrimaryStage().getScene().setCursor(Cursor.WAIT);
+				switch (cmd) {
+					case "update" :
+						String labelText = updateTable();
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								updateLabel.setText(labelText);
+								updateLabel.setVisible(true);
+							}
+						});
+						break;
+				}
+				app.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
+				return null;
+			}
+		};
+		return task;
 	}
 }
