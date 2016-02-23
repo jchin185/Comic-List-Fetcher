@@ -14,7 +14,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
- * This class imports/exports a list of publishers/series.
+ * This class imports/exports a list of publishers/series. A custom extension,
+ * "*.cblf", is used.
  * 
  * @author Jesse
  *
