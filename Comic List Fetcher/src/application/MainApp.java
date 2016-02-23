@@ -7,13 +7,11 @@ import application.controller.DeletePublisherController;
 import application.controller.NewPublisherController;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 /**
  * This class controls the main flow of logic and manages the stages/scenes.
@@ -31,13 +29,10 @@ public class MainApp extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Comic List Fetcher");
 		this.setUpMainScene();
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent t) {
-				controller.exit();
-				Platform.exit();
-				System.exit(0);
-			}
+		primaryStage.setOnCloseRequest(t -> {
+			controller.exit();
+			Platform.exit();
+			System.exit(0);
 		});
 	}
 

@@ -10,6 +10,7 @@ import java.util.List;
 import application.entity.Publisher;
 import application.entity.Series;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -26,13 +27,17 @@ public class FileManager {
 	public static boolean importFile(Stage stage, DatabaseManager dbManager) {
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Import a file.");
-		File f = fc.showOpenDialog(stage);
+		fc.getExtensionFilters().add(
+				new ExtensionFilter("Comicbook List Fetcher Files", "*.cblf"));
+		File file = fc.showOpenDialog(stage);
 		boolean success = false;
-		if (f != null) {
-			try (BufferedReader in = new BufferedReader(new FileReader(f));) {
+		if (file != null) {
+			try (BufferedReader in = new BufferedReader(
+					new FileReader(file));) {
 
 				String line, pubName = null;
 				while ((line = in.readLine()) != null) {
+					System.out.println(line);
 					if (line.startsWith("Publisher")) {
 						dbManager.addNewPub(line.split(":")[1].trim());
 						pubName = line.split(":")[1].trim();
@@ -53,10 +58,12 @@ public class FileManager {
 	public static boolean exportFile(Stage stage, DatabaseManager dbManager) {
 		List<Publisher> pubList = dbManager.getPublisherList();
 		FileChooser fc = new FileChooser();
-		File f = fc.showSaveDialog(stage);
-		if (f != null) {
-			try {
-				FileWriter fw = new FileWriter(f);
+		fc.getExtensionFilters().add(
+				new ExtensionFilter("Comicbook List Fetcher Files", "*.cblf"));
+		File file = fc.showSaveDialog(stage);
+		boolean success = false;
+		if (file != null) {
+			try (FileWriter fw = new FileWriter(file);) {
 				for (Publisher p : pubList) {
 					fw.write("Publisher:" + p.getName() + "\n");
 					System.out.print("Publisher:" + p.getName() + "\n");
@@ -65,12 +72,11 @@ public class FileManager {
 						System.out.print(s.getName() + "\n");
 					}
 				}
-				fw.close();
-				return true;
+				success = true;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return false;
+		return success;
 	}
 }

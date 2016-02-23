@@ -154,12 +154,22 @@ public class AppOverviewController {
 		readColumn.setStyle("-fx-alignment: CENTER;");
 	}
 
+	/*
+	 * Action handler code
+	 */
 	@FXML
 	private void handleImportSelected() {
 		System.err.println("Import item.");
 
 		boolean b = FileManager.importFile(app.getPrimaryStage(), dbManager);
 		System.out.println(b);
+		if (!b) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText("File Import Error");
+			alert.setTitle("Import Error");
+			alert.setContentText(
+					"There was an error importing the selected file.");
+		}
 	}
 
 	@FXML
@@ -167,6 +177,13 @@ public class AppOverviewController {
 		System.err.println("Export item.");
 		boolean b = FileManager.exportFile(app.getPrimaryStage(), dbManager);
 		System.out.println(b);
+		if (!b) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText("File Import Error");
+			alert.setTitle("Import Error");
+			alert.setContentText(
+					"There was an error importing the selected file.");
+		}
 	}
 
 	@FXML
@@ -291,13 +308,7 @@ public class AppOverviewController {
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {
-			if (dbManager.deleteIssueList(issueList)) {
-				issueList.clear();
-			} else {
-
-			}
-		} else {
-			return;
+			new Thread(showCursor("delete")).start();
 		}
 
 		issueTable.setItems(issueList);
@@ -383,6 +394,10 @@ public class AppOverviewController {
 		return labelText;
 	}
 
+	private boolean deleteAll() {
+		return dbManager.deleteIssueList(issueList);
+	}
+
 	private Task<Void> showCursor(String cmd) {
 		Task<Void> task = new Task<Void>() {
 			@Override
@@ -399,6 +414,12 @@ public class AppOverviewController {
 							}
 						});
 						break;
+					case "delete" :
+						if (deleteAll()) {
+							issueList.clear();
+						}
+						break;
+
 				}
 				app.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
 				return null;
